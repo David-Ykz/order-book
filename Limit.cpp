@@ -9,3 +9,7 @@ std::queue<Order> Limit::getOrders() {
 }
 
 Limit::Limit(double price) : price(price) {};
+
+void Limit::addOrder(Order& order) {
+    orders.push(order);
+}

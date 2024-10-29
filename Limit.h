@@ -13,6 +13,7 @@ public:
     Limit(double price);
     double getPrice();
     std::queue<Order> getOrders();
+    void addOrder(Order& order);
 };
 
 #endif
