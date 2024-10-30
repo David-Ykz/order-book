@@ -26,6 +26,11 @@ bool Order::getIsValid() {
     return isValid;
 }
 
+void Order::setVolume(int volume) {
+    this->volume = volume;
+    std::cout << "[volume:" << this->volume << "]";
+}
+
 Order::Order(int volume, double price, bool bidOrAsk): 
     id(++idCounter), 
     volume(volume), 

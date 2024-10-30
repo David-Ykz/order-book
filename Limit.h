@@ -6,13 +6,13 @@
 
 class Limit {
 private:
-    const double price;
+    double price;
     std::queue<Order> orders;
     
 public:
     Limit(double price);
     double getPrice();
-    std::queue<Order> getOrders();
+    std::queue<Order>& getOrders();
     void addOrder(Order& order);
 };
 

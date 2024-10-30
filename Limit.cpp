@@ -4,7 +4,7 @@ double Limit::getPrice() {
     return price;
 }
 
-std::queue<Order> Limit::getOrders() {
+std::queue<Order>& Limit::getOrders() {
     return orders;
 }
 
