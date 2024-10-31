@@ -9,15 +9,15 @@ private:
     static int idCounter;
     const int id;
     int volume;
-    const double price;
+    const int price;
     const std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
     const bool bidOrAsk; // 1 for bid 0 for ask
     bool isValid;
 public:
-    Order(int volume, double price, bool bidOrAsk);
+    Order(int volume, int price, bool bidOrAsk);
     int getId();
     int getVolume();
-    double getPrice();
+    int getPrice();
     std::chrono::time_point<std::chrono::high_resolution_clock> getTimestamp();
     bool getIsBidOrAsk();
     bool getIsValid();

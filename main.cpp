@@ -104,12 +104,12 @@ void generateOrders(std::vector<Limit>& bidOrderbook, std::vector<Limit>& askOrd
 
 }
 
-void generateRandomOrders(std::vector<Limit>& bidOrderbook, std::vector<Limit>& askOrderbook, int numOrders, double lowerPriceRange, double upperPriceRange) {
+void generateRandomOrders(std::vector<Limit>& bidOrderbook, std::vector<Limit>& askOrderbook, int numOrders, int lowerPriceRange, int upperPriceRange) {
     for (int i = 0; i < numOrders; i++) {
         if (i % 100000 == 0) {
-            std::cout << i << " ";
+            // std::cout << i << " ";
         }
-        Order order = Order(getRandomInteger(0, 10000), getRandomDouble(lowerPriceRange, upperPriceRange), i % 2);
+        Order order = Order(getRandomInteger(0, 10000), getRandomInteger(lowerPriceRange, upperPriceRange), i % 2);
         addToOrderbook(bidOrderbook, askOrderbook, order);
     }
 }
@@ -117,8 +117,7 @@ void generateRandomOrders(std::vector<Limit>& bidOrderbook, std::vector<Limit>& 
 
 
 int main() {
-//    auto duration = now.time_since_epoch();
-//    srand(static_cast<unsigned int>(duration.count()));
+    for (int j = 0; j < 10; j++) {
     std::vector<Limit> bidOrderbook;
     std::vector<Limit> askOrderbook;
 
@@ -128,16 +127,19 @@ int main() {
     // sellOrder.printOrder();
     // addToOrderbook(bidOrderbook, askOrderbook, buyOrder);
     // addToOrderbook(bidOrderbook, askOrderbook, sellOrder);
-    auto start = std::chrono::high_resolution_clock::now();    
-    generateRandomOrders(bidOrderbook, askOrderbook, 10000, 1, 5);
+    auto start = std::chrono::high_resolution_clock::now();
+    generateRandomOrders(bidOrderbook, askOrderbook, 10000, 0, 500);
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Time taken: " << duration.count()/1000.0 << " seconds" << std::endl;
+//    std::cout << "Time taken: " << duration.count()/1000.0 << " seconds" << std::endl;
+    std::cout << duration.count()/1000.0 << std::endl;
 
     // 2 hr 30 min for 1 million records, 4 minutes for 100k records
 
-    std::cout << std::endl;
-    std::cout << bidOrderbook.size() << " -- " << askOrderbook.size() << std::endl;
+    // std::cout << std::endl;
+    // std::cout << bidOrderbook.size() << " -- " << askOrderbook.size() << std::endl;
+
+    }
     return 0;
 }

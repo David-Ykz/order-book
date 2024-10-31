@@ -10,7 +10,7 @@ int Order::getVolume() {
     return volume;
 }
 
-double Order::getPrice() {
+int Order::getPrice() {
     return price;
 }
 
@@ -30,7 +30,7 @@ void Order::setVolume(int volume) {
     this->volume = volume;
 }
 
-Order::Order(int volume, double price, bool bidOrAsk): 
+Order::Order(int volume, int price, bool bidOrAsk): 
     id(++idCounter), 
     volume(volume), 
     price(price), 
