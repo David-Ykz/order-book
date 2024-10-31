@@ -7,11 +7,11 @@
 class Order {
 private:
     static int idCounter;
-    const int id;
+    int id;
     int volume;
-    const int price;
-    const std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
-    const bool bidOrAsk; // 1 for bid 0 for ask
+    int price;
+    std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
+    bool bidOrAsk; // 1 for bid 0 for ask
     bool isValid;
 public:
     Order(int volume, int price, bool bidOrAsk);
