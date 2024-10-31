@@ -4,8 +4,20 @@
 #include <vector>
 #include <algorithm>
 
-// void generateRandomOrders(bool bidOrAsk)
 
+int getRandomInteger(int min, int max) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(min, max);
+    return dis(gen);
+}
+
+double getRandomDouble(double min, double max) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<double> dis(min, max);
+    return dis(gen);
+}
 
 
 void insertOrder(std::vector<Limit>& book, Order& order) {
@@ -28,7 +40,7 @@ void executeTrade(std::vector<Limit>::iterator bidPointer, std::vector<Limit>::i
     Limit& ask = *askPointer;
     bool keepMatching = true;
 
-    std::cout << "executing trade dd";
+    // std::cout << "executing trade dd";
     while (!bid.getOrders().empty() && !ask.getOrders().empty()) {
         Order earliestBid = bid.getOrders().front();
         Order earliestAsk = ask.getOrders().front();
@@ -37,8 +49,8 @@ void executeTrade(std::vector<Limit>::iterator bidPointer, std::vector<Limit>::i
         earliestBid.setVolume(earliestBid.getVolume() - lowestVolume);
         earliestAsk.setVolume(earliestAsk.getVolume() - lowestVolume);
 
-        earliestBid.printOrder();
-        earliestAsk.printOrder();
+        // earliestBid.printOrder();
+        // earliestAsk.printOrder();
 
 
         if (earliestBid.getVolume() == 0) {
@@ -84,29 +96,46 @@ void generateOrders(std::vector<Limit>& bidOrderbook, std::vector<Limit>& askOrd
     for (int i = 0; i < numOrders; i++) {
         Order buyOrder = Order(1, i, 1);
         Order sellOrder = Order(1, i, 0);
-        buyOrder.printOrder();
-        sellOrder.printOrder();
+        // buyOrder.printOrder();
+        // sellOrder.printOrder();
         addToOrderbook(bidOrderbook, askOrderbook, buyOrder);
         addToOrderbook(bidOrderbook, askOrderbook, sellOrder);
     }
 
 }
 
+void generateRandomOrders(std::vector<Limit>& bidOrderbook, std::vector<Limit>& askOrderbook, int numOrders, double lowerPriceRange, double upperPriceRange) {
+    for (int i = 0; i < numOrders; i++) {
+        if (i % 100000 == 0) {
+            std::cout << i << " ";
+        }
+        Order order = Order(getRandomInteger(0, 10000), getRandomDouble(lowerPriceRange, upperPriceRange), i % 2);
+        addToOrderbook(bidOrderbook, askOrderbook, order);
+    }
+}
+
+
+
 int main() {
-    auto now = std::chrono::high_resolution_clock::now();
-    auto duration = now.time_since_epoch();
-    srand(static_cast<unsigned int>(duration.count()));
-
-
+//    auto duration = now.time_since_epoch();
+//    srand(static_cast<unsigned int>(duration.count()));
     std::vector<Limit> bidOrderbook;
     std::vector<Limit> askOrderbook;
 
-    Order buyOrder = Order(1, 5, 1);
-    Order sellOrder = Order(2, 5, 0);
-    buyOrder.printOrder();
-    sellOrder.printOrder();
-    addToOrderbook(bidOrderbook, askOrderbook, buyOrder);
-    addToOrderbook(bidOrderbook, askOrderbook, sellOrder);
+    // Order buyOrder = Order(1, 5, 1);
+    // Order sellOrder = Order(2, 5, 0);
+    // buyOrder.printOrder();
+    // sellOrder.printOrder();
+    // addToOrderbook(bidOrderbook, askOrderbook, buyOrder);
+    // addToOrderbook(bidOrderbook, askOrderbook, sellOrder);
+    auto start = std::chrono::high_resolution_clock::now();    
+    generateRandomOrders(bidOrderbook, askOrderbook, 10000, 1, 5);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Time taken: " << duration.count()/1000.0 << " seconds" << std::endl;
+
+    // 2 hr 30 min for 1 million records, 4 minutes for 100k records
 
     std::cout << std::endl;
     std::cout << bidOrderbook.size() << " -- " << askOrderbook.size() << std::endl;

@@ -28,7 +28,6 @@ bool Order::getIsValid() {
 
 void Order::setVolume(int volume) {
     this->volume = volume;
-    std::cout << "[volume:" << this->volume << "]";
 }
 
 Order::Order(int volume, double price, bool bidOrAsk): 
