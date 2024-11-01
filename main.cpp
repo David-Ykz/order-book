@@ -57,25 +57,25 @@ int main() {
     // book.addToOrderbook(buyOrder);
     // book.addToOrderbook(sellOrder);
     // book.printInfo();
+    auto start = std::chrono::high_resolution_clock::now();
 
     for (int j = 0; j < 10; j++) {
-    BSTBook book = BSTBook();
+//    BSTBook book = BSTBook();
     // std::vector<Limit> bidOrderbook;
     // std::vector<Limit> askOrderbook;
 
 //     // std::priority_queue<Limit, std::vector<Limit>, MaxPriceComparator> bids;
 //     // std::priority_queue<Limit, std::vector<Limit>, MinPriceComparator> asks;
 
-    auto start = std::chrono::high_resolution_clock::now();
-    // for (int i = 0; i < 1000000000; i++) {
+    for (int i = 0; i < 10000000; i++) {
+        // auto end = std::chrono::high_resolution_clock::now();
+        // auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
 
-    // }
-    generateRandomOrders(book, 100000, 0, 500);
+    }
+//    generateRandomOrders(book, 100000, 0, 500);
 
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Total time taken: " << clockDuration.count()/((j + 1) * 1000000000.0) << " seconds" << std::endl;
-    book.printInfo();
+//    std::cout << "Total time taken: " << clockDuration.count()/((j + 1) * 1000000000.0) << " seconds" << std::endl;
+//    book.printInfo();
 //    std::cout << duration.count()/1000.0 << std::endl;
 
 //     // 2 hr 30 min for 1 million records, 4 minutes for 100k records
@@ -84,8 +84,11 @@ int main() {
     // book.printInfo();
     }
 
-    std::cout << "Total randtime: " << std::chrono::duration_cast<std::chrono::duration<double>>(randomGenerationDuration).count() << " seconds" << std::endl;
-    std::cout << "Total clocktime: " << std::chrono::duration_cast<std::chrono::duration<double>>(clockDuration).count() << " seconds" << std::endl;
+    // std::cout << "Total randtime: " << std::chrono::duration_cast<std::chrono::duration<double>>(randomGenerationDuration).count() << " seconds" << std::endl;
+    // std::cout << "Total clocktime: " << std::chrono::duration_cast<std::chrono::duration<double>>(clockDuration).count() << " seconds" << std::endl;
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    std::cout << "Average time taken: " << duration.count()/10 << " nanoseconds" << std::endl;
 
     return 0;
 }

@@ -7,25 +7,24 @@ std::chrono::nanoseconds BSTBook::attemptMatchDuration = std::chrono::nanosecond
 std::chrono::nanoseconds BSTBook::addToOrderbookDuration = std::chrono::nanoseconds(0);
 
 
-void BSTBook::removeLimit(std::set<int>& tree, std::unordered_map<int, std::shared_ptr<Limit>>& map, int price) {
+void BSTBook::removeLimit(std::set<int>& tree, std::unordered_map<int, std::unique_ptr<Limit>>& map, int price) {
     auto start = std::chrono::high_resolution_clock::now();
     map.erase(map.find(price));
     std::set<int>::iterator it = tree.find(price);
-    tree.erase (it, tree.end());
+    tree.erase(it, tree.end());
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
     removeLimitDuration += duration;
 }
 
-BSTBook::BSTBook() {
-} 
+BSTBook::BSTBook() {} 
 
-void BSTBook::insertOrder(std::set<int>& tree, std::unordered_map<int, std::shared_ptr<Limit>>& map, Order& order) {
+void BSTBook::insertOrder(std::set<int>& tree, std::unordered_map<int, std::unique_ptr<Limit>>& map, Order& order) {
     auto start = std::chrono::high_resolution_clock::now();
     int price = order.getPrice();
     if (map.find(price) == map.end()) {
         tree.insert(price);
-        std::shared_ptr<Limit> limit = std::make_shared<Limit>(price);
+        std::unique_ptr<Limit> limit = std::make_unique<Limit>(price);
         limit->addOrder(order);
         map[price] = limit;
     } else {
@@ -38,7 +37,6 @@ void BSTBook::insertOrder(std::set<int>& tree, std::unordered_map<int, std::shar
 
 void BSTBook::executeTrade(int bidPrice, int askPrice) {
     auto start = std::chrono::high_resolution_clock::now();
-    std::shared_ptr<Limit> bidPointer = bidsMap[bidPrice];
     Limit bid = *bidsMap[bidPrice];
     Limit ask = *asksMap[askPrice];
 
