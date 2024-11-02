@@ -8,13 +8,13 @@ class Limit {
 private:
     int price;
     // TODO: change to std::queue<Order*>
-    std::queue<Order> orders;
+    std::queue<Order*> orders;
     
 public:
     Limit(int price);
     int getPrice();
-    std::queue<Order>& getOrders();
-    void addOrder(Order& order);
+    std::queue<Order*>& getOrders();
+    void addOrder(Order* order);
 };
 
 #endif

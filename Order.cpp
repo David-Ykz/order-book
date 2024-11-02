@@ -14,10 +14,6 @@ int Order::getPrice() {
     return price;
 }
 
-std::chrono::time_point<std::chrono::high_resolution_clock> Order::getTimestamp() {
-    return timestamp;
-}
-
 bool Order::getIsBidOrAsk() {
     return bidOrAsk;
 }
@@ -30,12 +26,15 @@ void Order::setVolume(int volume) {
     this->volume = volume;
 }
 
+void Order::removeVolume(int volume) {
+    this->volume -= volume;
+}
+
 Order::Order(int volume, int price, bool bidOrAsk): 
     id(++idCounter), 
     volume(volume), 
     price(price), 
-    bidOrAsk(bidOrAsk), 
-    timestamp(std::chrono::high_resolution_clock::now()) {
+    bidOrAsk(bidOrAsk) {
 }
 
 void Order::printOrder() {

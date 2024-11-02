@@ -5,29 +5,22 @@
 #include <set>
 #include <unordered_map>
 #include <memory>
+#include <vector>
 #include "Limit.cpp"
 
 class BSTBook {
 private:
     std::set<int> bidsTree;
     std::set<int> asksTree;
-    std::unordered_map<int, Limit*> bidsMap;
-    std::unordered_map<int, Limit*> asksMap;
-    void removeLimit(std::set<int>& tree, std::unordered_map<int, Limit*>& map, int price);
-
-    static std::chrono::nanoseconds removeLimitDuration;
-    static std::chrono::nanoseconds insertOrderDuration;
-    static std::chrono::nanoseconds executeTradeDuration;
-    static std::chrono::nanoseconds attemptMatchDuration;
-    static std::chrono::nanoseconds addToOrderbookDuration;
-
-
+    std::vector<Limit*> bidsMap;
+    std::vector<Limit*> asksMap;
+    void removeLimit(std::set<int>& tree, std::vector<Limit*>& map, int price);
 public:
-    BSTBook();
-    void insertOrder(std::set<int>& tree, std::unordered_map<int, Limit*>& map, Order& order);
+    BSTBook(int priceRange);
+    void insertOrder(std::set<int>& tree, std::vector<Limit*>& map, Order* order);
     void executeTrade(int bidPrice, int askPrice);
     void attemptMatch();
-    void addToOrderbook(Order& order);
+    void addToOrderbook(Order* order);
     void printInfo();
 };
 

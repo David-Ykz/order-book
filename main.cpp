@@ -17,7 +17,7 @@ int getRandomInteger(int min, int max) {
 
 void generateRandomOrders(BSTBook& book, int numOrders, int lowerPriceRange, int upperPriceRange) {
     for (int i = 0; i < numOrders; i++) {
-        Order order = Order(getRandomInteger(0, 10000), getRandomInteger(lowerPriceRange, upperPriceRange), i % 2);
+        Order* order = new Order(getRandomInteger(0, 10000), getRandomInteger(lowerPriceRange, upperPriceRange), i % 2);
         auto start = std::chrono::high_resolution_clock::now();
         book.addToOrderbook(order);
         auto end = std::chrono::high_resolution_clock::now();
@@ -29,7 +29,7 @@ void generateRandomOrders(BSTBook& book, int numOrders, int lowerPriceRange, int
 void generateOrders(BSTBook& book, int lowerPrice, int upperPrice, int numOrders) {
     for (int i = lowerPrice; i <= upperPrice; i++) {
         for (int j = 1; j <= numOrders; j++) {
-            Order order = Order(j, i, 1);
+            Order* order = new Order(j, i, 1);
             auto start = std::chrono::high_resolution_clock::now();
             book.addToOrderbook(order);
             auto end = std::chrono::high_resolution_clock::now();
@@ -39,7 +39,7 @@ void generateOrders(BSTBook& book, int lowerPrice, int upperPrice, int numOrders
     }
     for (int i = lowerPrice; i <= upperPrice; i++) {
         for (int j = 1; j <= numOrders; j++) {
-            Order order = Order(j, i, 0);
+            Order* order = new Order(j, i, 0);
             auto start = std::chrono::high_resolution_clock::now();
             book.addToOrderbook(order);
             auto end = std::chrono::high_resolution_clock::now();
@@ -53,8 +53,11 @@ int main() {
     auto start = std::chrono::high_resolution_clock::now();
 
     for (int j = 0; j < 5; j++) {
-        BSTBook book = BSTBook();
-        generateOrders(book, 0, 500, 125);
+        int lowerPrice = 0;
+        int upperPrice = 500;
+        BSTBook book = BSTBook(upperPrice - lowerPrice);
+//        generateOrders(book, lowerPrice, upperPrice, 125);
+//        generateRandomOrders(book, 250000, 0, 500);
     }
 
     auto end = std::chrono::high_resolution_clock::now();

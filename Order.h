@@ -18,10 +18,10 @@ public:
     int getId();
     int getVolume();
     int getPrice();
-    std::chrono::time_point<std::chrono::high_resolution_clock> getTimestamp();
     bool getIsBidOrAsk();
     bool getIsValid();
     void setVolume(int volume);
+    void removeVolume(int volume);
     void printOrder();
 };
 
