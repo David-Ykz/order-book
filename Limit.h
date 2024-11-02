@@ -13,7 +13,7 @@ private:
 public:
     Limit(int price);
     int getPrice();
-    std::queue<Order*>& getOrders();
+    std::queue<Order*>* getOrders();
     void addOrder(Order* order);
 };
 

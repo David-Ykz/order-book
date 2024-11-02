@@ -4,8 +4,8 @@ int Limit::getPrice() {
     return price;
 }
 
-std::queue<Order*>& Limit::getOrders() {
-    return orders;
+std::queue<Order*>* Limit::getOrders() {
+    return &orders;
 }
 
 Limit::Limit(int price) : price(price) {};

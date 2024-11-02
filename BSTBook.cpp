@@ -27,29 +27,34 @@ void BSTBook::insertOrder(std::set<int>& tree, std::vector<Limit*>& map, Order* 
 }
 
 void BSTBook::executeTrade(int bidPrice, int askPrice) {
-    Limit bid = *bidsMap[bidPrice];
-    Limit ask = *asksMap[askPrice];
+    // using Clock = std::chrono::high_resolution_clock;
+    // using ns = std::chrono::nanoseconds;
+    Limit* bid = bidsMap[bidPrice];
+    Limit* ask = asksMap[askPrice];
 
-    while (!bid.getOrders().empty() && !ask.getOrders().empty()) {
-        Order* earliestBid = bid.getOrders().front();
-        Order* earliestAsk = ask.getOrders().front();
+    while (!bid->getOrders()->empty() && !ask->getOrders()->empty()) {
+        Order* earliestBid = bid->getOrders()->front();
+        Order* earliestAsk = ask->getOrders()->front();
         int lowestVolume = std::min(earliestBid->getVolume(), earliestAsk->getVolume());
         earliestBid->removeVolume(lowestVolume);
         earliestAsk->removeVolume(lowestVolume);
 
         if (earliestBid->getVolume() == 0) {
-            bid.getOrders().pop();
+            bid->getOrders()->pop();
         }
         if (earliestAsk->getVolume() == 0) {
-            ask.getOrders().pop();
+            ask->getOrders()->pop();
         }
     }
-    if (bid.getOrders().empty()) {
-        removeLimit(bidsTree, bidsMap, bid.getPrice());
+    // auto start = Clock::now();
+    if (bid->getOrders()->empty()) {
+        removeLimit(bidsTree, bidsMap, bid->getPrice());
     }
-    if (ask.getOrders().empty()) {
-        removeLimit(asksTree, asksMap, ask.getPrice());
+    if (ask->getOrders()->empty()) {
+        removeLimit(asksTree, asksMap, ask->getPrice());
     }
+    // auto end = Clock::now();
+    // std::cout << std::chrono::duration_cast<ns>(end - start).count() << std::endl;
 }
 
 void BSTBook::attemptMatch() {

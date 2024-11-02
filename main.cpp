@@ -56,7 +56,8 @@ int main() {
         int lowerPrice = 0;
         int upperPrice = 500;
         BSTBook book = BSTBook(upperPrice - lowerPrice);
-//        generateOrders(book, lowerPrice, upperPrice, 125);
+//        generateOrders(book, lowerPrice, upperPrice, 1);
+        generateOrders(book, lowerPrice, upperPrice, 125);
 //        generateRandomOrders(book, 250000, 0, 500);
     }
 
