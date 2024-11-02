@@ -7,30 +7,44 @@ std::chrono::nanoseconds BSTBook::attemptMatchDuration = std::chrono::nanosecond
 std::chrono::nanoseconds BSTBook::addToOrderbookDuration = std::chrono::nanoseconds(0);
 
 
-void BSTBook::removeLimit(std::set<int>& tree, std::unordered_map<int, std::unique_ptr<Limit>>& map, int price) {
+void BSTBook::removeLimit(std::set<int>& tree, std::unordered_map<int, Limit*>& map, int price) {
     auto start = std::chrono::high_resolution_clock::now();
+    delete map[price];
     map.erase(map.find(price));
     std::set<int>::iterator it = tree.find(price);
     tree.erase(it, tree.end());
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-    removeLimitDuration += duration;
+     auto end = std::chrono::high_resolution_clock::now();
+     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+     removeLimitDuration += duration;
 }
 
 BSTBook::BSTBook() {} 
 
-void BSTBook::insertOrder(std::set<int>& tree, std::unordered_map<int, std::unique_ptr<Limit>>& map, Order& order) {
-    auto start = std::chrono::high_resolution_clock::now();
+void BSTBook::insertOrder(std::set<int>& tree, std::unordered_map<int, Limit*>& map, Order& order) {
+    using Clock = std::chrono::high_resolution_clock;
+    auto start = Clock::now();
     int price = order.getPrice();
+    auto beforeFind = Clock::now();
     if (map.find(price) == map.end()) {
+        auto beforeInsert = Clock::now();
         tree.insert(price);
-        std::unique_ptr<Limit> limit = std::make_unique<Limit>(price);
+        auto beforeLimit = Clock::now();
+        Limit* limit = new Limit(price);
         limit->addOrder(order);
+        auto beforeMap = Clock::now();
         map[price] = limit;
+
+        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(beforeInsert - beforeFind).count() << std::endl;
+        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(beforeLimit - beforeInsert).count() << std::endl;
+        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(beforeMap - beforeLimit).count() << std::endl;
+        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - beforeMap).count() << std::endl;
+
     } else {
         map[price]->addOrder(order);
     }
     auto end = std::chrono::high_resolution_clock::now();
+
+
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
     insertOrderDuration += duration;
 }
@@ -62,7 +76,7 @@ void BSTBook::executeTrade(int bidPrice, int askPrice) {
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-    executeTradeDuration += duration;
+    insertOrderDuration += duration;
 }
 
 void BSTBook::attemptMatch() {
@@ -77,31 +91,35 @@ void BSTBook::attemptMatch() {
     if (maxBidPrice >= minAskPrice) {
         executeTrade(maxBidPrice, minAskPrice);
     }
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-    attemptMatchDuration += duration;
+     auto end = std::chrono::high_resolution_clock::now();
+     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+     attemptMatchDuration += duration;
 }
 
 void BSTBook::addToOrderbook(Order& order) {
     auto start = std::chrono::high_resolution_clock::now();
     insertOrder(order.getIsBidOrAsk() ? bidsTree : asksTree, order.getIsBidOrAsk() ? bidsMap : asksMap, order);
     attemptMatch();
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-    addToOrderbookDuration += duration;
+     auto end = std::chrono::high_resolution_clock::now();
+     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+     addToOrderbookDuration += duration;
 }
 
 void BSTBook::printInfo() {
     std::cout << bidsTree.size() << " -- " << asksTree.size() << std::endl; 
-std::cout << "Durations (in seconds):" << std::endl;
-std::cout << "Remove Limit Duration: " 
-          << std::chrono::duration_cast<std::chrono::duration<double>>(removeLimitDuration).count() << " seconds" << std::endl;
-std::cout << "Insert Order Duration: " 
-          << std::chrono::duration_cast<std::chrono::duration<double>>(insertOrderDuration).count() << " seconds" << std::endl;
-std::cout << "Execute Trade Duration: " 
-          << std::chrono::duration_cast<std::chrono::duration<double>>(executeTradeDuration).count() << " seconds" << std::endl;
-std::cout << "Attempt Match Duration: " 
-          << std::chrono::duration_cast<std::chrono::duration<double>>(attemptMatchDuration).count() << " seconds" << std::endl;
-std::cout << "Add To Orderbook Duration: " 
-          << std::chrono::duration_cast<std::chrono::duration<double>>(addToOrderbookDuration).count() << " seconds" << std::endl;
+    std::cout << insertOrderDuration.count() << " nanoseconds";
+
+
+
+// std::cout << "Durations (in seconds):" << std::endl;
+// std::cout << "Remove Limit Duration: " 
+//           << std::chrono::duration_cast<std::chrono::duration<double>>(removeLimitDuration).count() << " seconds" << std::endl;
+// std::cout << "Insert Order Duration: " 
+//           << std::chrono::duration_cast<std::chrono::duration<double>>(insertOrderDuration).count() << " seconds" << std::endl;
+// std::cout << "Execute Trade Duration: " 
+//           << std::chrono::duration_cast<std::chrono::duration<double>>(executeTradeDuration).count() << " seconds" << std::endl;
+// std::cout << "Attempt Match Duration: " 
+//           << std::chrono::duration_cast<std::chrono::duration<double>>(attemptMatchDuration).count() << " seconds" << std::endl;
+// std::cout << "Add To Orderbook Duration: " 
+//           << std::chrono::duration_cast<std::chrono::duration<double>>(addToOrderbookDuration).count() << " seconds" << std::endl;
           }

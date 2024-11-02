@@ -7,6 +7,7 @@
 class Limit {
 private:
     int price;
+    // TODO: change to std::queue<Order*>
     std::queue<Order> orders;
     
 public:

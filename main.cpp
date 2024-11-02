@@ -6,7 +6,7 @@
 #include "BSTBook.cpp"
 
 std::chrono::nanoseconds randomGenerationDuration = std::chrono::nanoseconds(0);
-std::chrono::nanoseconds clockDuration = std::chrono::nanoseconds(0);
+std::chrono::nanoseconds timeTaken = std::chrono::nanoseconds(0);
 
 
 int getRandomInteger(int min, int max) {
@@ -30,24 +30,40 @@ int getRandomInteger(int min, int max) {
 
 void generateRandomOrders(BSTBook& book, int numOrders, int lowerPriceRange, int upperPriceRange) {
     for (int i = 0; i < numOrders; i++) {
-        if (i % 100000 == 0) {
-            // std::cout << i << " ";
-        }
-        auto start = std::chrono::high_resolution_clock::now();
-
         Order order = Order(getRandomInteger(0, 10000), getRandomInteger(lowerPriceRange, upperPriceRange), i % 2);
+        auto start = std::chrono::high_resolution_clock::now();
+        book.addToOrderbook(order);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-        randomGenerationDuration += duration;
-        start = std::chrono::high_resolution_clock::now();
-        book.addToOrderbook(order);
-        end = std::chrono::high_resolution_clock::now();
-        duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-        clockDuration += duration;
+        timeTaken += duration;
     }
 }
 
 
+void speedBenchmark(BSTBook& book, int lowerPrice, int upperPrice, int numOrders) {
+    for (int i = lowerPrice; i <= upperPrice; i++) {
+        for (int j = 1; j <= numOrders; j++) {
+            Order order = Order(j, i, 1);
+            Order otherOrder = Order(j, i, 0);
+            auto start = std::chrono::high_resolution_clock::now();
+            book.addToOrderbook(order);
+            book.addToOrderbook(otherOrder);
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+            timeTaken += duration;
+        }
+    }
+    // for (int i = upperPrice; i >= lowerPrice; i--) {
+    //     for (int j = 1; j <= numOrders; j++) {
+    //         Order order = Order(j, i, 0);
+    //         auto start = std::chrono::high_resolution_clock::now();
+    //         book.addToOrderbook(order);
+    //         auto end = std::chrono::high_resolution_clock::now();
+    //         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    //         timeTaken += duration;
+    //     }
+    // }
+}
 
 int main() {
     // Order buyOrder = Order(1, 5, 1);
@@ -59,36 +75,19 @@ int main() {
     // book.printInfo();
     auto start = std::chrono::high_resolution_clock::now();
 
-    for (int j = 0; j < 10; j++) {
-//    BSTBook book = BSTBook();
-    // std::vector<Limit> bidOrderbook;
-    // std::vector<Limit> askOrderbook;
-
-//     // std::priority_queue<Limit, std::vector<Limit>, MaxPriceComparator> bids;
-//     // std::priority_queue<Limit, std::vector<Limit>, MinPriceComparator> asks;
-
-    for (int i = 0; i < 10000000; i++) {
-        // auto end = std::chrono::high_resolution_clock::now();
-        // auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-
-    }
-//    generateRandomOrders(book, 100000, 0, 500);
-
-//    std::cout << "Total time taken: " << clockDuration.count()/((j + 1) * 1000000000.0) << " seconds" << std::endl;
-//    book.printInfo();
-//    std::cout << duration.count()/1000.0 << std::endl;
-
-//     // 2 hr 30 min for 1 million records, 4 minutes for 100k records
-
-//     std::cout << std::endl;
-    // book.printInfo();
+    for (int j = 0; j < 1; j++) {
+        BSTBook book = BSTBook();
+//        generateRandomOrders(book, 1000000, 0, 500);
+        speedBenchmark(book, 0, 10, 100000);
+        book.printInfo();
     }
 
     // std::cout << "Total randtime: " << std::chrono::duration_cast<std::chrono::duration<double>>(randomGenerationDuration).count() << " seconds" << std::endl;
     // std::cout << "Total clocktime: " << std::chrono::duration_cast<std::chrono::duration<double>>(clockDuration).count() << " seconds" << std::endl;
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-    std::cout << "Average time taken: " << duration.count()/10 << " nanoseconds" << std::endl;
+    std::cout << "Average time taken: " << timeTaken.count()/1000000000.0 << " seconds" << std::endl;
+    std::cout << "Average time taken: " << duration.count()/1000000000.0 << " seconds" << std::endl;
 
     return 0;
 }
