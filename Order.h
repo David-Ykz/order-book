@@ -10,7 +10,6 @@ private:
     int id;
     int volume;
     int price;
-    std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
     bool bidOrAsk; // 1 for bid 0 for ask
     bool isValid;
 public:

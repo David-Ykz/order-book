@@ -52,13 +52,13 @@ void generateOrders(BSTBook& book, int lowerPrice, int upperPrice, int numOrders
 int main() {
     auto start = std::chrono::high_resolution_clock::now();
 
-    for (int j = 0; j < 5; j++) {
+    for (int j = 0; j < 1; j++) {
         int lowerPrice = 0;
         int upperPrice = 500;
         BSTBook book = BSTBook(upperPrice - lowerPrice);
 //        generateOrders(book, lowerPrice, upperPrice, 1);
         generateOrders(book, lowerPrice, upperPrice, 125);
-//        generateRandomOrders(book, 250000, 0, 500);
+        book.printInfo();
     }
 
     auto end = std::chrono::high_resolution_clock::now();

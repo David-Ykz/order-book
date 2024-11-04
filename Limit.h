@@ -15,6 +15,7 @@ public:
     int getPrice();
     std::queue<Order*>* getOrders();
     void addOrder(Order* order);
+    int totalVolume();
 };
 
 #endif

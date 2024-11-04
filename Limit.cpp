@@ -13,3 +13,13 @@ Limit::Limit(int price) : price(price) {};
 void Limit::addOrder(Order* order) {
     orders.push(order);
 }
+
+int Limit::totalVolume() {
+    int counter = 0;
+    std::queue<Order*> tempQueue = orders;
+    while (!tempQueue.empty()) {
+        counter += tempQueue.front()->getVolume();
+        tempQueue.pop();
+    }
+    return counter;
+}

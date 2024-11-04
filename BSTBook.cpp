@@ -75,5 +75,18 @@ void BSTBook::addToOrderbook(Order* order) {
 }
 
 void BSTBook::printInfo() {
+    std::cout << "Bids: " << std::endl;
+    for (int i = 0; i < bidsMap.size(); i++) {
+        if (bidsMap[i] != nullptr) {
+            std::cout << "Price: " << i << " - Volume: " << bidsMap[i]->totalVolume();
+        }
+    }
+    std::cout << "-------------------" << std::endl;
+    std::cout << "Asks: " << std::endl;
+    for (int i = 0; i < asksMap.size(); i++) {
+        if (asksMap[i] != nullptr) {
+            std::cout << "Price: " << i << " - Volume: " << asksMap[i]->totalVolume() << std::endl;
+        }
+    }
     std::cout << bidsTree.size() << " -- " << asksTree.size() << std::endl; 
 }
