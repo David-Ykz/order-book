@@ -4,13 +4,10 @@
 class Limit {
 public:
     queue<Order*> orders;
+    int price;
 
     Limit(Order* order) {
         orders.push(order);
-    }
-    
-    int price() {
-        if (orders.empty()) return -1;
-        return orders.front()->price;
-    }
+        price = order->price;
+    }    
 };

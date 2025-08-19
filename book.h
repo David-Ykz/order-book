@@ -4,13 +4,13 @@
 
 struct CompareMin {
     bool operator()(Limit* a, Limit* b) const {
-        return a->price() < b->price();
+        return a->price < b->price;
     }
 };
 
 struct CompareMax {
     bool operator()(Limit* a, Limit* b) const {
-        return a->price() > b->price();
+        return a->price > b->price;
     }
 };
 
@@ -26,27 +26,13 @@ public:
     Book() {}
 
     int getBidPrice() {
-        while (!bidBook.empty()) {
-            int price = (*bidBook.begin())->price();
-            if (price > 0) {
-                return price;
-            } else {
-                bidBook.erase(bidBook.begin());
-            }
-        }
-        return -1;
+        if (bidBook.empty()) return -1;
+        return (*bidBook.begin())->price;
     }
 
     int getAskPrice() {
-        while (!askBook.empty()) {
-            int price = (*askBook.begin())->price();
-            if (price > 0) {
-                return price;
-            } else {
-                askBook.erase(askBook.begin());
-            }
-        }
-        return -1;
+        if (askBook.empty()) return -1;
+        return (*askBook.begin())->price;
     }
 
     int64_t addBid(int volume, int price) {
@@ -80,10 +66,8 @@ public:
     }
 
     void reconcile() {
-        if (bidBook.empty() || askBook.empty()) return;
-
         processedOrders.clear();
-        while (getBidPrice() > 0 && getAskPrice() > 0 && getBidPrice() >= getAskPrice()) {
+        while (!bidBook.empty() && !askBook.empty() && (*bidBook.begin())->price >= (*askBook.begin())->price) {
             Limit* bidLimit = (*bidBook.begin());
             Limit* askLimit = (*askBook.begin());
             while (!bidLimit->orders.empty() && !askLimit->orders.empty()) {
@@ -105,6 +89,14 @@ public:
                     bidLimit->orders.pop();
                     processedOrders.push_back(bidOrder->id);
                 }
+            }
+            if (bidLimit->orders.empty()) {
+                bidBook.erase(bidLimit);
+                bidPrices.erase(bidLimit->price);
+            }
+            if (askLimit->orders.empty()) {
+                askBook.erase(askLimit);
+                askPrices.erase(askLimit->price);
             }
         }
     }

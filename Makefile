@@ -1,8 +1,11 @@
-.PHONY: main debug
-
-main:
-	g++ -O3 -o main main.cpp
-#	g++ -O3 -flto -mavx2 -march=znver3 -mtune=znver3 -o main main.cpp
+.PHONY: debug benchmark profile
 
 debug:
-	g++ -o main main.cpp
+	g++ -o main main.cpp && ./main
+
+benchmark:
+	g++ -Ofast -o main benchmark.cpp && ./main
+
+profile:
+	g++ -pg benchmark.cpp -o main && ./main
+	gprof main gmon.out > report.txt
